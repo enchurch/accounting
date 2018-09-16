@@ -114,5 +114,43 @@ class JournalTest extends BaseTest
 		
 		$this->assertEquals($u_transaction->getReferencedObject()->fresh(),$product->fresh());
 	}
-	
-}
+
+	public function testJournalTransactionSoftDeletes() {
+
+        $user = $this->createFakeUser();
+        $user->initJournal();
+        $user_journal = $user->fresh()->journal;
+
+        $account = $this->createFakeAccount();
+        $account->initJournal();
+        $account_journal = Account::find(1)->journal;
+
+        $a_transaction = $account_journal->creditDollars(12.50);
+
+        $this->assertEquals(12.50, $account_journal->getCurrentBalanceInDollars());
+
+        $a_transaction->delete();
+        $this->assertEquals(0, $account_journal->getCurrentBalanceInDollars());
+
+        $this->assertTrue($a_transaction->trashed());
+        $this->assertEquals(0, \Scottlaurent\Accounting\Models\JournalTransaction::get()->count() );
+        $this->assertEquals(1, \Scottlaurent\Accounting\Models\JournalTransaction::withTrashed()->get()->count() );
+
+    }
+
+    public function testSetCurrency()
+    {
+
+        $user = $this->createFakeUser();
+        $user->initJournal();
+        $user_journal = $user->fresh()->journal;
+        $user_journal->setCurrency('CAD');
+        $user_journal->save();
+
+        $fresh_journal = $user->fresh()->journal;
+        $this->assertEquals('CAD', $fresh_journal->currency);
+
+    }
+
+
+    }
