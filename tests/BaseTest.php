@@ -6,6 +6,7 @@ use Models\User;
 use Models\Account;
 use Models\CompanyJournal;
 use Scottlaurent\Accounting\Models\Ledger;
+use Symfony\Component\Finder\Finder;
 
 /**
  * Class BaseTest
@@ -63,7 +64,20 @@ abstract class BaseTest extends \Orchestra\Testbench\TestCase
 	        'database' => ':memory:',
 	        'prefix'   => '',
 	    ]);
-	    
+
+        $files = [];
+
+        // load the library config file
+        $path = realpath(__DIR__.'/../src/config');
+
+        foreach (Finder::create()->files()->name('*.php')->in($path) as $file) {
+            $files[basename($file->getRealPath(), '.php')] = $file->getRealPath();
+        }
+
+        foreach ($files as $key => $path) {
+            $app['config']->set($key, require $path);
+        }
+
 	    Eloquent::unguard();
 	}
 	

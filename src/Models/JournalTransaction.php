@@ -75,7 +75,7 @@ class JournalTransaction extends Model
      */
     public function journal()
     {
-        return $this->belongsTo(Journal::class);
+        return $this->belongsTo(config('accounting.models.journal'));
     }
 
 

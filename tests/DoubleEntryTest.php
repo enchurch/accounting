@@ -56,7 +56,7 @@ class DoubleEntryTest extends BaseTest
 		$transaction_group->addDollarTransaction($this->company_ar_journal,'credit',100);
 		$transaction_group->commit();
 		
-		$this->assertEquals($this->company_cash_journal->getCurrentBalanceInDollars(),(-1) * $this->company_ar_journal->getCurrentBalanceInDollars());
+		$this->assertEquals($this->company_cash_journal->getCurrentBalanceDollars(),(-1) * $this->company_ar_journal->getCurrentBalanceDollars());
 		
 	}
 

@@ -16,7 +16,18 @@ use Models\Product;
  */
 class JournalTest extends BaseTest
 {
-	
+
+    public function testX() {
+
+        $j = new Journal();
+        $j->setCurrency('USD');
+        $z = $j->getBalanceDollars();
+        $this->assertEquals(0, $z);
+
+        $q = Journal::class;
+        $tt = new $q();
+        $mm = 5;
+    }
 	/**
 	 *
 	 */
@@ -43,17 +54,17 @@ class JournalTest extends BaseTest
         // we can credit a journal and get back dollar balances and standard Money balances
         $user_journal->creditDollars(100);
 		
-        $this->assertEquals(100,$user_journal->getCurrentBalanceInDollars());
+        $this->assertEquals(100,$user_journal->getCurrentBalanceDollars());
 		$this->assertEquals(100,$user_journal->getDollarsCreditedToday());
-		$this->assertEquals(0,$user_journal->getDollarsDebitedToday());
+		$this->assertEquals(0,$user_journal->getDebitedDollarsToday());
         $this->assertEquals(10000,$user_journal->getCurrentBalance()->getAmount());
 		
         // we can debit a journal
         $user_journal = User::find($user->id)->journal;
         $user_journal->debitDollars(100.99);
         
-        $this->assertEquals(100.99,$user_journal->getDollarsDebitedToday());
-		$this->assertEquals(-0.99,$user_journal->getCurrentBalanceInDollars());
+        $this->assertEquals(100.99,$user_journal->getDebitedDollarsToday());
+		$this->assertEquals(-0.99,$user_journal->getCurrentBalanceDollars());
 		$this->assertEquals(-99,$user_journal->getCurrentBalance()->getAmount());
 		
 	}
@@ -100,14 +111,14 @@ class JournalTest extends BaseTest
 		*/
 		
         // make sure that the amount credited is correct...
-		$this->assertEquals($product->price * $qty_products,$account_journal->getCurrentBalanceInDollars(),"Product Purchase Income");
+		$this->assertEquals($product->price * $qty_products,$account_journal->getCurrentBalanceDollars(),"Product Purchase Income");
 		
 		// and also that the referenced product can be retrieved from the transaction
 		$this->assertInstanceOf($a_transaction->ref_class,$a_transaction->getReferencedObject());
 		$this->assertEquals($a_transaction->getReferencedObject()->fresh(),$product->fresh());
 		
 		// make sure that the amount debited is correct...
-		$this->assertEquals(-1 * $product->price * $qty_products,$user_journal->getCurrentBalanceInDollars(),"Products Purchased");
+		$this->assertEquals(-1 * $product->price * $qty_products,$user_journal->getCurrentBalanceDollars(),"Products Purchased");
 		
 		// and also that the referenced product can be retrieved from the transaction
 		$this->assertInstanceOf($u_transaction->ref_class,$u_transaction->getReferencedObject());
@@ -127,10 +138,10 @@ class JournalTest extends BaseTest
 
         $a_transaction = $account_journal->creditDollars(12.50);
 
-        $this->assertEquals(12.50, $account_journal->getCurrentBalanceInDollars());
+        $this->assertEquals(12.50, $account_journal->getCurrentBalanceDollars());
 
         $a_transaction->delete();
-        $this->assertEquals(0, $account_journal->getCurrentBalanceInDollars());
+        $this->assertEquals(0, $account_journal->getCurrentBalanceDollars());
 
         $this->assertTrue($a_transaction->trashed());
         $this->assertEquals(0, \Scottlaurent\Accounting\Models\JournalTransaction::get()->count() );
