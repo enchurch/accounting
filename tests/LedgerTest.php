@@ -29,7 +29,7 @@ class LedgerTest extends BaseTest
 		}
 		
 		// Test if our AR Balance is correct
-		$this->assertEquals($number_of_users * 100, (-1) * $this->company_ar_journal->getCurrentBalanceInDollars());
+		$this->assertEquals($number_of_users * 100, (-1) * $this->company_ar_journal->getCurrentBalanceDollars());
 		
 		// This is testing that the value on the LEFT side of the books (ASSETS) is the same as the RIGHT side (L + OE + nominals)
 		$this->assertEquals($number_of_users * 100, $this->company_assets_ledger->getCurrentBalanceInDollars());
@@ -37,7 +37,7 @@ class LedgerTest extends BaseTest
 		$this->assertEquals($this->company_assets_ledger->getCurrentBalanceInDollars(),$this->company_income_ledger->getCurrentBalanceInDollars());
 		
 		// At this point we have no cash on hand
-		$this->assertEquals($this->company_cash_journal->getCurrentBalanceInDollars(),0);
+		$this->assertEquals($this->company_cash_journal->getCurrentBalanceDollars(),0);
 		
 		// customer makes a payment (use double entry service)
 		$user_making_payment = $users[0];
@@ -58,24 +58,27 @@ class LedgerTest extends BaseTest
 		// these are asset accounts, so their balances are reversed
 		$total_payment_made = (((int) ($payment_1 * 100)) / 100) + (((int) ($payment_2 * 100)) / 100);
 		$this->assertEquals(
-			$this->company_cash_journal->getCurrentBalanceInDollars(),
+			$this->company_cash_journal->getCurrentBalanceDollars(),
 			(-1) * $total_payment_made,
 			'Company Cash Is Not Correcrt'
 		);
 		
 		$this->assertEquals(
-			$this->company_ar_journal->getCurrentBalanceInDollars(),
+			$this->company_ar_journal->getCurrentBalanceDollars(),
 			(-1) * (($number_of_users * 100) - $total_payment_made),
 			'AR Doesn Not Reflects Cash Payments Made')
 		;
-		
-		// check the value of all the payments made by this user?
-		$dollars_paid_by_user = $this->company_cash_journal->transactionsReferencingObjectQuery($user_making_payment)->get()->sum('debit') / 100;
-		$this->assertEquals($dollars_paid_by_user,$total_payment_made,'User payments did not match what was recorded.');
+
+        // check the value of all the payments made by this user?
+        $dollars_paid_by_user = $this->company_cash_journal->transactions()
+                ->where('ref_class', get_class($user_making_payment))
+                ->where('ref_class_id', $user_making_payment->id)
+                ->get()->sum('debit') / 100;
+        $this->assertEquals($dollars_paid_by_user, $total_payment_made, 'User payments did not match what was recorded.');
 		
 		// check the "balance due" (the amount still owed by this user)
 		$this->assertEquals(
-			$user_journal->getCurrentBalanceInDollars() - $dollars_paid_by_user,
+			$user_journal->getCurrentBalanceDollars() - $dollars_paid_by_user,
 			100 - $total_payment_made,
 			'User Current Balance does not reflect their payment amounts'
 		);

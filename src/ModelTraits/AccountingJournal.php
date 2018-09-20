@@ -9,16 +9,16 @@ use Scottlaurent\Accounting\Models\Journal;
  * @package Scottlaurent\Accounting\ModelTraits
  */
 trait AccountingJournal {
-	
-	
-	/**
+
+
+    /**
 	 * Morph to Journal.
 	 *
 	 * @return mixed
 	 */
 	public function journal()
     {
-        return $this->morphOne(Journal::class,'morphed');
+        return $this->morphOne(config('accounting.models.journal'),'morphed');
     }
 	
 	/**
@@ -30,7 +30,8 @@ trait AccountingJournal {
 	 */
 	public function initJournal($currency_code='USD') {
     	if (!$this->journal) {
-	        $journal = new Journal();
+            $journalClass = config('accounting.models.journal');
+            $journal = new $journalClass();
 	        $journal->currency = $currency_code;
 	        $journal->balance = 0;
 	        return $this->journal()->save($journal);

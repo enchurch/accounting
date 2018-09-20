@@ -8,7 +8,7 @@ use Money\Currency;
 use Carbon\Carbon;
 
 /**
- * Class Journal
+ * Class Ledger
  * @package Scottlaurent\Accounting
  * @property    Money                  $balance
  * @property    string                 $currency
@@ -31,7 +31,7 @@ class Ledger extends Model
 	 */
 	public function journals()
 	{
-		return $this->hasMany(Journal::class);
+		return $this->hasMany(config('accounting.models.journal'));
 	}
 	
 	/**
@@ -39,7 +39,7 @@ class Ledger extends Model
      */
     public function journal_transctions()
     {
-        return $this->hasManyThrough(JournalTransaction::class, Journal::class);
+        return $this->hasManyThrough(config('accounting.models.journal_transaction'), config('accounting.models.journal'));
     }
 	
 	/**
