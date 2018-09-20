@@ -12,16 +12,6 @@ trait AccountingJournal {
 
 
     /**
-     * Override this if subclassing Journal
-     * @return string
-     */
-    protected function getJournalClass(): string
-    {
-        return config('accounting.models.journal');
-    }
-
-
-    /**
 	 * Morph to Journal.
 	 *
 	 * @return mixed
@@ -40,7 +30,7 @@ trait AccountingJournal {
 	 */
 	public function initJournal($currency_code='USD') {
     	if (!$this->journal) {
-            $journalClass = $this->getJournalClass();
+            $journalClass = config('accounting.models.journal');
             $journal = new $journalClass();
 	        $journal->currency = $currency_code;
 	        $journal->balance = 0;
