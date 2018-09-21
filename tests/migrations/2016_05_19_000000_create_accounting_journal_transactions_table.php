@@ -32,7 +32,8 @@ class CreateAccountingJournalTransactionsTable extends Migration
         });
 
         Schema::create('accounting_journal_transactions', function (Blueprint $table) {
-            $table->char('id',36)->unique();
+            $table->increments('id');
+            $table->char('trans_id',36)->unique();
             $table->char('transaction_group',36)->nullable();
             $table->integer('journal_id')->unsigned();
             $table->bigInteger('debit')->nullable();
