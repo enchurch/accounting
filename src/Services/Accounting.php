@@ -3,6 +3,7 @@
 namespace Scottlaurent\Accounting\Services;
 
 use Carbon\Carbon;
+use Scottlaurent\Accounting\Exceptions\TransactionCouldNotBeProcessed;
 use Scottlaurent\Accounting\Models\Journal;
 use Money\Money;
 use Money\Currency;

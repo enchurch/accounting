@@ -33,16 +33,6 @@ class JournalTransaction extends Model
     protected $currency = 'USD';
 
     /**
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
-     * @var array
-     */
-    protected $guarded=['id'];
-
-    /**
      * @var array
      */
     protected $casts = [
@@ -56,7 +46,7 @@ class JournalTransaction extends Model
     protected static function boot()
     {
         static::creating(function ($transaction) {
-            $transaction->id = \Ramsey\Uuid\Uuid::uuid4()->toString();
+            $transaction->trans_id = \Ramsey\Uuid\Uuid::uuid4()->toString();
         });
 
         static::saved(function ($transaction) {
