@@ -25,11 +25,6 @@ class JournalTransaction extends Model
     /**
      * @var string
      */
-    protected $table = 'accounting_journal_transactions';
-
-    /**
-     * @var string
-     */
     protected $currency = 'USD';
 
     /**

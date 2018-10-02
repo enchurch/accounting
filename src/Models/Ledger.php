@@ -19,11 +19,6 @@ use Carbon\Carbon;
 class Ledger extends Model
 {
 	
-	/**
-	 * @var string
-	 */
-	protected $table = 'accounting_ledgers';
-	
 	public $currency = 'USD';
 	
 	/**

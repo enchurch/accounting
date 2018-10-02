@@ -21,7 +21,7 @@ class CreateAccountingJournalTransactionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('accounting_journals', function (Blueprint $table) {
+        Schema::create('journals', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('ledger_id')->unsigned()->nullable();
             $table->bigInteger('balance');
@@ -31,7 +31,7 @@ class CreateAccountingJournalTransactionsTable extends Migration
             $table->timestamps();
         });
 
-        Schema::create('accounting_journal_transactions', function (Blueprint $table) {
+        Schema::create('journal_transactions', function (Blueprint $table) {
             $table->increments('id');
             $table->char('trans_id',36)->unique();
             $table->char('transaction_group',36)->nullable();
@@ -47,7 +47,7 @@ class CreateAccountingJournalTransactionsTable extends Migration
             $table->dateTime('post_date');
             $table->softDeletes();
 
-            $table->foreign('journal_id', 'journaltrans_journal')->references('id')->on('accounting_journals');
+            $table->foreign('journal_id', 'journaltrans_journal')->references('id')->on('journals');
         });
 
 
@@ -59,7 +59,7 @@ class CreateAccountingJournalTransactionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('accounting_journal_transactions');
-        Schema::dropIfExists('accounting_journals');
+        Schema::dropIfExists('journal_transactions');
+        Schema::dropIfExists('journals');
     }
 }

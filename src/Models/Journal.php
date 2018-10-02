@@ -19,11 +19,6 @@ use Carbon\Carbon;
 class Journal extends Model
 {
 	
-	/**
-	 * @var string
-	 */
-	protected $table = 'accounting_journals';
-
     /**
      * @var array
      */
